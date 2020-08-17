@@ -1,0 +1,23 @@
+# I selected this as stable version and alpine lightweight so save 
+# downloading more than needed. Probably best to stick to a version
+# rather than latest to avoid breaking changes in node.
+FROM node:14.8.0-alpine
+# set the base working directory so ./ will all be relative to this
+# directory
+WORKDIR /usr/src/app
+# this will copy the package.json and package-lock.json files into 
+# the app directory
+COPY package*.json ./
+# this will install the required npm packages from the 
+# package-lock.json 
+RUN npm ci
+# this copies all the project files from the local working directory
+# into the containers working directory
+# excluding node_modules as this is in .dockerignore
+COPY . .
+# this lets docker know the container is listening on port 3000
+# it opens it for inter-container communication but doesn't open 
+# the port to the outside world
+EXPOSE 3000
+# set the default command and parameter to the express server
+CMD [ "npm", "start" ]

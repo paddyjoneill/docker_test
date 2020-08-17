@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+    # names the service
+    frontend:
+        # could use an image here is images are built and 
+        # uploaded to a repository
+        build:
+            # sets the working directory
+            context: ./frontend/
+            dockerfile: ./Dockerfile_frontend
+        # should container crash or exit for some reason will
+        # spin a new one up
+        restart: always
+        # opens up port 80 for communcation with the outside world
+        # could also open up 443 for SSL
+        ports:
+            - '80:80'
+        # sets the node environment to production
+        environment: 
+            - NODE_ENV=production
+        # will make sure the backend is spun up before the front end
+        # no point having the front end up if backend api isn't up
+        depends_on: 
+            - backend
+
+
+    backend:
+        build:
+            context: ./backend/
+            dockerfile: ./Dockerfile_backend
+        restart: always
+        # having looked at code could change port using environment
+        # variables if any conflict
+        ports:
+            - '3000:3000'
+        environment: 
+            - PORT=3000
+
+
